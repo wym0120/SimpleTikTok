@@ -1,14 +1,21 @@
 package nju.se.simpletiktok
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 // TODO: 2021/7/20 Get real page num by api
 private const val PAGE_NUM = 3
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
@@ -36,6 +43,28 @@ class MainActivity : AppCompatActivity() {
                 else -> VideoItemFragment.newInstance("todo", "todo", "todo", "todo", 0)
             }
         }
+    }
+
+    private fun getVideoInfo(): List<VideoInfo> {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://beiyou.bytedance.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val apiService = retrofit.create(ApiService::class.java)
+        var res = listOf<VideoInfo>()
+        apiService.getVideos().enqueue(object : Callback<List<VideoInfo>> {
+            override fun onResponse(
+                call: Call<List<VideoInfo>>,
+                response: Response<List<VideoInfo>>,
+            ) {
+                res = response.body()!!
+            }
+
+            override fun onFailure(call: Call<List<VideoInfo>>, t: Throwable) {
+                Log.d(TAG, "Fail to get video info.")
+            }
+        })
+        return res
     }
 
     private inner class PageChangeListener : ViewPager2.OnPageChangeCallback() {
