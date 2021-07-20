@@ -6,9 +6,71 @@
         android:layout_height="match_parent"
         tools:context=".VideoItemFragment">
 
-    <VideoView
+    <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000"
+            android:src="@mipmap/ic_launcher_round"
+            app:layout_constraintRight_toRightOf="@id/videoView"
+            app:layout_constraintBottom_toBottomOf="@id/videoView"
+            android:layout_marginBottom="270dp"
+            android:layout_marginEnd="20dp" />
+
+    <ImageButton
+            android:id="@+id/like_btn"
             android:layout_width="0dp"
+            android:layout_height="70dp"
+            app:layout_constraintRight_toRightOf="@id/avatar"
+            app:layout_constraintLeft_toLeftOf="@id/avatar"
+            app:layout_constraintTop_toBottomOf="@id/avatar"
+            android:elevation="20dp"
+            android:layout_marginTop="30dp"
+            android:src="@mipmap/ic_launcher_round"
+            android:contentDescription="@string/btn_like_content_desc" />
+
+    <TextView
+            android:id="@+id/text_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="20dp"
+            app:layout_constraintLeft_toLeftOf="@id/videoView"
+            app:layout_constraintBottom_toBottomOf="@id/videoView"
+            android:layout_marginBottom="100dp"
+            android:layout_marginStart="30dp"
+            android:textColor="@color/light_blue_600"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+    <TextView
+            android:id="@+id/text_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="20dp"
+            app:layout_constraintLeft_toLeftOf="@id/text_nickname"
+            app:layout_constraintBottom_toBottomOf="@id/videoView"
+            android:layout_marginBottom="50dp"
+            android:textColor="@color/light_blue_600"
+            android:textSize="20sp" />
+
+    <TextView
+            android:id="@+id/text_like_count"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/like_btn"
+            app:layout_constraintLeft_toLeftOf="@id/like_btn"
+            app:layout_constraintRight_toRightOf="@id/like_btn"
+            android:elevation="20dp"
+            android:layout_marginTop="5dp"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:textColor="@color/white" />
+
+    <VideoView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/videoView"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -19,15 +81,17 @@
     <ImageButton
             android:layout_width="35dp"
             android:layout_height="28dp"
+            android:elevation="20dp"
             android:id="@+id/start_pause_btn"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:contentDescription="@string/start_pause_img_btn_content_desc"
+            android:contentDescription="@string/btn_start_pause_content_desc"
             android:src="@mipmap/ic_launcher_round" />
 
     <SeekBar
             android:layout_height="0dp"
             android:layout_width="0dp"
+            android:elevation="20dp"
             android:id="@+id/seek_bar"
             app:layout_constraintLeft_toRightOf="@id/start_pause_btn"
             app:layout_constraintRight_toRightOf="parent"
