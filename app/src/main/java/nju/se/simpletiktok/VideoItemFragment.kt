@@ -1,10 +1,10 @@
 package nju.se.simpletiktok
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import nju.se.simpletiktok.databinding.FragmentVideoItemBinding
 import kotlin.properties.Delegates
 
 private const val ARG_NICKNAME = "nickname"
@@ -13,12 +13,16 @@ private const val ARG_AVATAR_URI = "avatarUri"
 private const val ARG_LIKE_COUNT = "likeCount"
 private const val ARG_DESCRIPTION = "description"
 
-class VideoItemFragment : Fragment() {
+class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
     private lateinit var nickname: String
     private lateinit var description: String
     private lateinit var videoUri: String
     private lateinit var avatarUri: String
     private var likeCount by Delegates.notNull<Int>()
+
+    private var _binding: FragmentVideoItemBinding? = null
+    private val binding get() = _binding!!
+    private var started = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +35,64 @@ class VideoItemFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_video_item, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        this._binding = FragmentVideoItemBinding.bind(view)
+        initPlayer()
+        initSeekBar()
+        initStartPauseBtn()
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
+    private fun initPlayer() {
+        val player = binding.videoView
+        player.setOnClickListener { changeState() }
+
+        player.setVideoPath(videoUri)
+
+        player.setOnPreparedListener { mp ->
+            mp.setOnSeekCompleteListener {
+                if (!started) {
+                    player.start()
+                }
+            }
+        }
+    }
+
+    private fun initStartPauseBtn() {
+        val startPauseBtn = binding.startPauseBtn
+        startPauseBtn.setOnClickListener { changeState() }
+    }
+
+    private fun initSeekBar() {
+        val seekBar = binding.seekBar
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                val player = binding.videoView
+                player.seekTo(seekBar!!.progress * player.duration / 100)
+            }
+        })
+    }
+
+    private fun changeState() {
+        started = !started
+        if (started) {
+            binding.videoView.start()
+        } else {
+            binding.videoView.pause()
+        }
     }
 
     companion object {
