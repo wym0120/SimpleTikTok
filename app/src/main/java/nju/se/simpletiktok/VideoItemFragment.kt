@@ -22,7 +22,10 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
 
     private var _binding: FragmentVideoItemBinding? = null
     private val binding get() = _binding!!
+
+    // state fields
     private var started = false
+    private var like = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,8 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this._binding = FragmentVideoItemBinding.bind(view)
+        initStaticResources()
+        initLikeBtn()
         initPlayer()
         initSeekBar()
         initStartPauseBtn()
@@ -48,11 +53,33 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
         super.onDestroyView()
     }
 
+    /**
+     * Initialize some static resources by [description], [avatarUri], [nickname], [likeCount]
+     * */
+    private fun initStaticResources() {
+        binding.textDesc.text = description
+        binding.textNickname.text = nickname
+        binding.textLikeCount.text = likeCount.toString()
+        // TODO: 2021/7/20 uncomment this line to load avatar from uri
+//        binding.avatar.setImageURI(Uri.parse(avatarUri))
+    }
+
+    private fun initLikeBtn() {
+        binding.likeBtn.setOnClickListener {
+            if (like) likeCount-- else likeCount++
+            // TODO: 2021/7/20 Change image view according to like state
+            like = !like
+            binding.textLikeCount.text = likeCount.toString()
+        }
+    }
+
     private fun initPlayer() {
         val player = binding.videoView
         player.setOnClickListener { changeState() }
 
-        player.setVideoPath(videoUri)
+        // TODO: 2021/7/20 replace local video with video online
+//        player.setVideoURI(Uri.parse(videoUri))
+        player.setVideoPath("android.resource://" + this.requireActivity().packageName + "/" + R.raw.bytedance)
 
         player.setOnPreparedListener { mp ->
             mp.setOnSeekCompleteListener {
