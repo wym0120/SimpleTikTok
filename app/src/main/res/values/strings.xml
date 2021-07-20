@@ -2,6 +2,5 @@
     <string name="app_name">SimpleTikTok</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="start_pause_img_btn_content_desc">Used for start and pause the video</string>
 </resources>
