@@ -1,11 +1,10 @@
 package nju.se.simpletiktok
 
+import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
-import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import com.squareup.picasso.Picasso
 import nju.se.simpletiktok.databinding.FragmentVideoItemBinding
 import kotlin.properties.Delegates
 
@@ -23,21 +22,10 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
     private var likeCount by Delegates.notNull<Int>()
 
     private var _binding: FragmentVideoItemBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
 
     // state fields
-    private var started = false
     private var like = false
-    private val mHandler = Handler(Looper.getMainLooper())
-    private val updateSeekBar = object : Runnable {
-        override fun run() {
-            if (binding.videoView.isPlaying) {
-                binding.seekBar.max = binding.videoView.duration
-                binding.seekBar.progress = binding.videoView.currentPosition
-            }
-            mHandler.postDelayed(this, 200)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,9 +44,6 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
         initStaticResources()
         initLikeBtn()
         initPlayer()
-        initSeekBar()
-        initStartPauseBtn()
-        mHandler.post(updateSeekBar)
     }
 
     override fun onDestroyView() {
@@ -70,68 +55,37 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
      * Initialize some static resources by [description], [avatarUri], [nickname], [likeCount]
      * */
     private fun initStaticResources() {
-        binding.textDesc.text = description
-        binding.textNickname.text = nickname
-        binding.textLikeCount.text = likeCount.toString()
-        // TODO: 2021/7/20 uncomment this line to load avatar from uri
-//        binding.avatar.setImageURI(Uri.parse(avatarUri))
+        binding!!.textDesc.text = description
+        binding!!.textNickname.text = nickname
+        binding!!.textLikeCount.text = likeCount.toString()
+        Picasso.get().load(Uri.parse(avatarUri)).into(binding!!.avatar)
     }
 
     private fun initLikeBtn() {
-        binding.likeBtn.setOnClickListener {
+        binding!!.likeBtn.setOnClickListener {
             if (like) likeCount-- else likeCount++
             // TODO: 2021/7/20 Change image view according to like state
             like = !like
-            binding.textLikeCount.text = likeCount.toString()
+            binding!!.textLikeCount.text = likeCount.toString()
         }
     }
 
     private fun initPlayer() {
-        val player = binding.videoView
-        player.setOnClickListener { changeState() }
-
-        // TODO: 2021/7/20 replace local video with video online
-//        player.setVideoURI(Uri.parse(videoUri))
-        player.setVideoPath("android.resource://" + this.requireActivity().packageName + "/" + R.raw.bytedance)
-
-        player.setOnPreparedListener { mp ->
-            mp.setOnSeekCompleteListener {
-                if (!started) {
-                    player.start()
-                }
-            }
+        val player = binding!!.videoView
+        player.setOnClickListener {
+            if (player.isPlaying) player.pause()
+            else player.start()
         }
-    }
 
-    private fun initStartPauseBtn() {
-        val startPauseBtn = binding.startPauseBtn
-        startPauseBtn.setOnClickListener { changeState() }
-    }
+        player.setVideoURI(Uri.parse(videoUri))
+//        player.setVideoPath("android.resource://" + this.requireActivity().packageName + "/" + R.raw.bytedance)
 
-    private fun initSeekBar() {
-        val seekBar = binding.seekBar
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-
+        // auto start
+        player.setOnPreparedListener { mp ->
+            mp.isLooping = true
+            if (!player.isPlaying) {
+                player.start()
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                val player = binding.videoView
-                player.seekTo(seekBar!!.progress)
-            }
-        })
-    }
-
-    private fun changeState() {
-        started = !started
-        if (started) {
-            binding.videoView.start()
-        } else {
-            binding.videoView.pause()
         }
     }
 
