@@ -17,4 +17,6 @@ public class VideoInfo{
     public int likecounts;
     @SerializedName("thumbnails")
     public String thumbnails;
+
+
 }
