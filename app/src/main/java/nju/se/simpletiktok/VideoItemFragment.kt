@@ -1,5 +1,6 @@
 package nju.se.simpletiktok
 
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -77,7 +78,6 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
         binding!!.textDesc.text = description
         binding!!.textNickname.text = nickname
         binding!!.textLikeCount.text = likeCount.toString()
-        // TODO: 2021/7/20 uncomment this line to load avatar from uri
         Picasso.get().load(Uri.parse(avatarUri)).into(binding!!.avatar)
     }
 
@@ -94,14 +94,17 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
         val player = binding!!.videoView
         player.setOnClickListener { changeState() }
 
-        // TODO: 2021/7/20 replace local video with video online
-//        player.setVideoURI(Uri.parse(videoUri))
-        player.setVideoPath("android.resource://" + this.requireActivity().packageName + "/" + R.raw.bytedance)
+        player.setVideoURI(Uri.parse(videoUri))
+//        player.setVideoPath("android.resource://" + this.requireActivity().packageName + "/" + R.raw.bytedance)
 
-        player.setOnPreparedListener { mp ->
-            mp.setOnSeekCompleteListener {
-                if (!started) {
-                    player.start()
+
+        player.setOnPreparedListener {
+            MediaPlayer.OnPreparedListener { mp ->
+                mp.isLooping = true
+                mp.setOnSeekCompleteListener {
+                    if (!started) {
+                        player.start()
+                    }
                 }
             }
         }
