@@ -3,10 +3,7 @@ package nju.se.simpletiktok
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
-import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
 import nju.se.simpletiktok.databinding.FragmentVideoItemBinding
@@ -31,18 +28,6 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
     // state fields
     private var started = false
     private var like = false
-    private val mHandler = Handler(Looper.getMainLooper())
-    private val updateSeekBar = object : Runnable {
-        override fun run() {
-            if (binding != null) {
-                if (binding!!.videoView.isPlaying) {
-                    binding!!.seekBar.max = binding?.videoView!!.duration
-                    binding!!.seekBar.progress = binding?.videoView!!.currentPosition
-                }
-                mHandler.postDelayed(this, 200)
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +46,6 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
         initStaticResources()
         initLikeBtn()
         initPlayer()
-        initSeekBar()
-        initStartPauseBtn()
-        mHandler.post(updateSeekBar)
     }
 
     override fun onDestroyView() {
@@ -108,29 +90,6 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
                 }
             }
         }
-    }
-
-    private fun initStartPauseBtn() {
-        val startPauseBtn = binding!!.startPauseBtn
-        startPauseBtn.setOnClickListener { changeState() }
-    }
-
-    private fun initSeekBar() {
-        val seekBar = binding!!.seekBar
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                val player = binding!!.videoView
-                player.seekTo(seekBar!!.progress)
-            }
-        })
     }
 
     private fun changeState() {
