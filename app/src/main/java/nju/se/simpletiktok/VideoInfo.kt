@@ -4,23 +4,23 @@ import com.google.gson.annotations.SerializedName
 
 class VideoInfo {
     @SerializedName("_id")
-    var id: String = ""
+    var id = ""
 
     @SerializedName("feedurl")
-    var videouri: String = ""
+    var videoUri = ""
 
     @SerializedName("avatar")
-    var avatururi: String = ""
+    var avatarUri = ""
 
     @SerializedName("nickname")
-    var nickname: String = ""
+    var nickname = ""
 
     @SerializedName("description")
-    var description: String = ""
+    var description = ""
 
     @SerializedName("likecount")
-    var likecounts = 0
+    var likeCounts = 0
 
     @SerializedName("thumbnails")
-    var thumbnails: String = ""
+    var thumbnails = ""
 }

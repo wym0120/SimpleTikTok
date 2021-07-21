@@ -32,11 +32,11 @@ class MainActivity : AppCompatActivity() {
                 else -> {
                     val videoInfo = VideoInfoProvider.allVideoInfo[position - 1]
                     VideoItemFragment.newInstance(
-                        videoUri = videoInfo.videouri,
-                        avatarUri = videoInfo.avatururi,
+                        videoUri = videoInfo.videoUri,
+                        avatarUri = videoInfo.avatarUri,
                         nickname = videoInfo.nickname,
                         description = videoInfo.description,
-                        likeCount = videoInfo.likecounts)
+                        likeCount = videoInfo.likeCounts)
                 }
             }
         }
