@@ -23,7 +23,7 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
     private var likeCount by Delegates.notNull<Int>()
 
     private var _binding: FragmentVideoItemBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
 
     // state fields
     private var started = false
@@ -31,11 +31,13 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
     private val mHandler = Handler(Looper.getMainLooper())
     private val updateSeekBar = object : Runnable {
         override fun run() {
-            if (binding.videoView.isPlaying) {
-                binding.seekBar.max = binding.videoView.duration
-                binding.seekBar.progress = binding.videoView.currentPosition
+            if (binding != null) {
+                if (binding!!.videoView.isPlaying) {
+                    binding!!.seekBar.max = binding?.videoView!!.duration
+                    binding!!.seekBar.progress = binding?.videoView!!.currentPosition
+                }
+                mHandler.postDelayed(this, 200)
             }
-            mHandler.postDelayed(this, 200)
         }
     }
 
@@ -70,24 +72,24 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
      * Initialize some static resources by [description], [avatarUri], [nickname], [likeCount]
      * */
     private fun initStaticResources() {
-        binding.textDesc.text = description
-        binding.textNickname.text = nickname
-        binding.textLikeCount.text = likeCount.toString()
+        binding!!.textDesc.text = description
+        binding!!.textNickname.text = nickname
+        binding!!.textLikeCount.text = likeCount.toString()
         // TODO: 2021/7/20 uncomment this line to load avatar from uri
 //        binding.avatar.setImageURI(Uri.parse(avatarUri))
     }
 
     private fun initLikeBtn() {
-        binding.likeBtn.setOnClickListener {
+        binding!!.likeBtn.setOnClickListener {
             if (like) likeCount-- else likeCount++
             // TODO: 2021/7/20 Change image view according to like state
             like = !like
-            binding.textLikeCount.text = likeCount.toString()
+            binding!!.textLikeCount.text = likeCount.toString()
         }
     }
 
     private fun initPlayer() {
-        val player = binding.videoView
+        val player = binding!!.videoView
         player.setOnClickListener { changeState() }
 
         // TODO: 2021/7/20 replace local video with video online
@@ -104,12 +106,12 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
     }
 
     private fun initStartPauseBtn() {
-        val startPauseBtn = binding.startPauseBtn
+        val startPauseBtn = binding!!.startPauseBtn
         startPauseBtn.setOnClickListener { changeState() }
     }
 
     private fun initSeekBar() {
-        val seekBar = binding.seekBar
+        val seekBar = binding!!.seekBar
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 
@@ -120,7 +122,7 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                val player = binding.videoView
+                val player = binding!!.videoView
                 player.seekTo(seekBar!!.progress)
             }
         })
@@ -129,9 +131,9 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
     private fun changeState() {
         started = !started
         if (started) {
-            binding.videoView.start()
+            binding!!.videoView.start()
         } else {
-            binding.videoView.pause()
+            binding!!.videoView.pause()
         }
     }
 
