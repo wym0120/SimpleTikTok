@@ -13,31 +13,47 @@ import com.bumptech.glide.Glide
 import kotlin.collections.ArrayList
 
 
-class CityListActivity : Fragment(R.layout.activity_city_list), VideoClickListener {
-    private var videos: ArrayList<VideoInfo>? = null//TODO：从参数获取，目前未实现
+
+class CityListFragment : Fragment(), VideoClickListener {
+    private var videos: List<VideoInfo>? = null
     private var VideoList: RecyclerView? = null
     private var adapter: VideoListAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreate(savedInstanceState)
+        val root = inflater.inflate(R.layout.activity_city_list, container, false)
         VideoList = getView()?.findViewById<RecyclerView>(R.id.rcy_video_list)
 
         this.VideoList =getView()?.findViewById<RecyclerView>(R.id.rcy_video_list)
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         this.VideoList?.setLayoutManager(staggeredGridLayoutManager)//模仿抖音使用错排两列
-        //videos =
-        videos= ArrayList()//TODO replace with real videolist from args
+
+        videos =VideoInfoProvider.allVideoInfo
+        //videos= ArrayList()//TODO replace with real videolist from args
         adapter = VideoListAdapter(videos, this)
         if(this.VideoList!=null) this.VideoList!!.setAdapter(adapter)
 
+        return root;
 
     }
 
+    override fun onVideoClick(clickedItemIndex: Int) {
+        val videos: ArrayList<VideoInfo?> = ArrayList<VideoInfo?>(videos)
+        val intent = Intent(context, VideoWatchActivity::class.java)//TODO:具体跳转去哪
+        intent.putExtra("videos", videos)
+        intent.putExtra("index", clickedItemIndex)
+        startActivity(intent)
+    }
+
     private inner class VideoListAdapter(
-        videos: ArrayList<VideoInfo>?,
+        videos: List<VideoInfo>?,
         cityListActivity: VideoClickListener
     ) :RecyclerView.Adapter<VideoListAdapter.VideoItemViewHolder>() {
-        private var videos: ArrayList<VideoInfo>? = videos
+        private var videos: List<VideoInfo>? = videos
         private var videoClickListener: VideoClickListener? = cityListActivity
         private var viewHolderCount = 0
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoItemViewHolder {
@@ -76,13 +92,6 @@ class CityListActivity : Fragment(R.layout.activity_city_list), VideoClickListen
         }
     }
 
-    override fun onVideoClick(clickedItemIndex: Int) {
-        val videos: ArrayList<VideoInfo?> = ArrayList<VideoInfo?>(videos)
-        val intent = Intent(context, VideoItemFragment::class.java)//TODO:具体跳转去哪
-        intent.putExtra("videos", videos)
-        intent.putExtra("index", clickedItemIndex)
-        startActivity(intent)
-    }
 
 }
 interface VideoClickListener {

@@ -18,5 +18,4 @@ public class VideoInfo{
     @SerializedName("thumbnails")
     public String thumbnails;
 
-
 }
