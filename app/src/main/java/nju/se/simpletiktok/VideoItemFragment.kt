@@ -1,11 +1,13 @@
 package nju.se.simpletiktok
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import com.squareup.picasso.Picasso
 import nju.se.simpletiktok.databinding.FragmentVideoItemBinding
 import kotlin.properties.Delegates
 
@@ -76,7 +78,7 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
         binding!!.textNickname.text = nickname
         binding!!.textLikeCount.text = likeCount.toString()
         // TODO: 2021/7/20 uncomment this line to load avatar from uri
-//        binding.avatar.setImageURI(Uri.parse(avatarUri))
+        Picasso.get().load(Uri.parse(avatarUri)).into(binding!!.avatar)
     }
 
     private fun initLikeBtn() {
