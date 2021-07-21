@@ -1,6 +1,5 @@
 package nju.se.simpletiktok
 
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -26,7 +25,6 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
     private val binding get() = _binding
 
     // state fields
-    private var started = false
     private var like = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,30 +72,20 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
 
     private fun initPlayer() {
         val player = binding!!.videoView
-        player.setOnClickListener { changeState() }
+        player.setOnClickListener {
+            if (player.isPlaying) player.pause()
+            else player.start()
+        }
 
         player.setVideoURI(Uri.parse(videoUri))
 //        player.setVideoPath("android.resource://" + this.requireActivity().packageName + "/" + R.raw.bytedance)
 
-
-        player.setOnPreparedListener {
-            MediaPlayer.OnPreparedListener { mp ->
-                mp.isLooping = true
-                mp.setOnSeekCompleteListener {
-                    if (!started) {
-                        player.start()
-                    }
-                }
+        // auto start
+        player.setOnPreparedListener { mp ->
+            mp.isLooping = true
+            if (!player.isPlaying) {
+                player.start()
             }
-        }
-    }
-
-    private fun changeState() {
-        started = !started
-        if (started) {
-            binding!!.videoView.start()
-        } else {
-            binding!!.videoView.pause()
         }
     }
 
