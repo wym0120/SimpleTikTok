@@ -2,6 +2,7 @@ package nju.se.simpletiktok
 
 import android.content.Intent
 import android.net.Uri
+import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.TextView
@@ -18,6 +19,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         VideoInfoProvider.request(this::initViewPager)
+        findViewById<TextView>(R.id.city).setOnClickListener {
+            val intent = Intent(this, CityListContainerActivity::class.java)
+            startActivity(intent)
+        }
         initRecord()
     }
 

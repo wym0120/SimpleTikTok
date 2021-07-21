@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CityListActivity">
+    tools:context=".CityListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcy_video_list"
@@ -19,6 +19,5 @@
         app:layout_constraintVertical_bias="0.0"
         tools:itemCount="100"
         tools:listitem="@layout/video_list_item" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
