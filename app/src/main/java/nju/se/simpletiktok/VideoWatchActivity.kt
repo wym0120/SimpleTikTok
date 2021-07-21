@@ -17,52 +17,46 @@ class VideoWatchActivity : AppCompatActivity() {
     private lateinit var avatarUri: String
     private var likeCount by Delegates.notNull<Int>()
     private var index = 0
-    private var videos: List<*>? = null
+    private var videos: List<VideoInfo>? = null
+    var currentVideo : VideoInfo?=null;
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_video_watch)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_video_watch)
         VideoInfoProvider.request(this::initViewPager)
-        if (intent.extras == null || intent.extras!!.getParcelableArrayList<Parcelable>("videos") == null) {
-            finish()
-            return
-        }
-        videos = intent.extras!!.getParcelableArrayList<Parcelable>("videos")
-        index = intent.extras!!.getInt("index")
-
-        val currentVideo : VideoInfo
-        currentVideo = videos?.get(this.index) as VideoInfo
-
-        this.nickname=currentVideo.nickname
-        this.description=currentVideo.description
-        this.avatarUri=currentVideo.avatururi
-        this.likeCount=currentVideo.likecounts
-        this.videoUri=currentVideo.avatururi
-
+//        if (intent.extras == null || intent.extras!!.getParcelableArrayList<Parcelable>("videos") == null) {
+//            finish()
+//            return
+//        }
+        //videos = intent.extras!!.getParcelableArrayList<Parcelable>("videos")
+//        this.nickname= currentVideo!!.nickname
+//        this.description=currentVideo!!.description
+//        this.avatarUri=currentVideo!!.avatarUri
+//        this.likeCount=currentVideo!!.likeCounts
+//        this.videoUri=currentVideo!!.videoUri
     }
     private fun initViewPager() {
+        videos =VideoInfoProvider.allVideoInfo
+
+        index = intent.extras!!.getInt("index")
+        currentVideo = videos?.get(this.index) as VideoInfo
         viewPager = findViewById(R.id.pager)
         viewPager.adapter = VideoPagerAdapter(this)
-        viewPager.currentItem = 1
+        viewPager.currentItem = index
     }
 
     private inner class VideoPagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         // Use two fake fragments to implement endless scrolling
-        override fun getItemCount(): Int = VideoInfoProvider.pageNum + 2
+        override fun getItemCount(): Int = VideoInfoProvider.pageNum
         override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0, itemCount - 1 -> Fragment()
-                else -> {
-                    val videoInfo = VideoInfoProvider.allVideoInfo[position - 1]
-                    VideoItemFragment.newInstance(
-                        videoUri = videoUri,
-                        avatarUri = avatarUri,
-                        nickname = nickname,
-                        description = description,
-                        likeCount = likeCount)
-                }
-            }
+            val videoInfo = VideoInfoProvider.allVideoInfo[position]
+            return VideoItemFragment.newInstance(
+                videoUri = currentVideo!!.videoUri,
+                avatarUri = currentVideo!!.avatarUri,
+                nickname = currentVideo!!.nickname,
+                description = currentVideo!!.description,
+                likeCount = currentVideo!!.likeCounts)
         }
     }
 }

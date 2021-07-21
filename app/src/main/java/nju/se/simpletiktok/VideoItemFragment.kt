@@ -59,6 +59,7 @@ class VideoItemFragment : Fragment(R.layout.fragment_video_item) {
         binding!!.textNickname.text = nickname
         binding!!.textLikeCount.text = likeCount.toString()
         Picasso.get().load(Uri.parse(avatarUri)).into(binding!!.avatar)
+
     }
 
     private fun initLikeBtn() {

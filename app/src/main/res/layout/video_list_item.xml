@@ -6,6 +6,7 @@
     android:layout_height="210dp"
     android:padding="1dp">
 
+
     <ImageView
         android:id="@+id/img_video"
         android:layout_width="match_parent"
